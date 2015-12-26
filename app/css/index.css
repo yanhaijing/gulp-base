@@ -1,0 +1,14 @@
+body {
+    background: green;
+}
+.div1 {
+    width: 220px;
+    height: 220px;
+    background: url(img/index1.jpg);
+}
+
+.div2 {
+    width: 150px;
+    height: 150px;
+    background: url(img/index2.jpg);
+}
