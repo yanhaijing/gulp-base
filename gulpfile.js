@@ -14,6 +14,7 @@ var sass = require('gulp-ruby-sass');
 var concat  = require('gulp-concat');
 var notify = require('gulp-notify');
 var cache = require('gulp-cache');
+var runSequence = require('run-sequence');
 
 // hello
 gulp.task('hello', function() {
@@ -22,42 +23,42 @@ gulp.task('hello', function() {
 
 // clean
 gulp.task('clean', function() {
-    del(dist);
+    return del(dist);
 });
 
 // html
 gulp.task('html', function() {
-    gulp.src('app/**.html')
+    return gulp.src('app/**.html')
         .pipe(gulp.dest(dist))
 });
 
 // image
 gulp.task('image', function() {
-    gulp.src('app/**/*.+(png|jpg|jpeg|gif|svg)')
+    return gulp.src('app/**/*.+(png|jpg|jpeg|gif|svg)')
         .pipe(gulp.dest(dist))
 });
 
 // scss
 gulp.task('sass', function() {
-    sass('app/css/**.scss')
+    return sass('app/css/**.scss')
         .on('error', sass.logError)
         .pipe(gulp.dest(dist + '/css'))
 });
 
 // css
 gulp.task('css', function() {
-    gulp.src('app/css/**.css')
+    return gulp.src('app/css/**.css')
         .pipe(gulp.dest(dist + '/css'))
 });
 
 // style
-gulp.task('style', function (){
-    gulp.start('sass', 'css')
+gulp.task('style', function (cb){
+    runSequence(['sass', 'css'], cb)
 });
 
 // js
 gulp.task('js', function() {
-    gulp.src('app/js/**.js')
+    return gulp.src('app/js/**.js')
         .pipe(gulp.dest(dist + '/js'))
 });
 
@@ -71,8 +72,8 @@ gulp.task('es', function() {
 });
 
 //script
-gulp.task('script', function (){
-    gulp.start('es', 'js')
+gulp.task('script', function (cb){
+    runSequence(['es', 'js'], cb)
 });
 
 // browserSync
@@ -84,7 +85,8 @@ gulp.task('browserSync', function() {
     })
 });
 
-gulp.task('dev', ['html', 'image', 'style', 'script'], function (){
+gulp.task('dev', ['clean'], function (cb){
+    runSequence(['html', 'image', 'style', 'script'], cb)
 });
 
 // gulp.task('build', [`clean`, `sass`, `useref`, `images`, `fonts`], function (){
@@ -92,8 +94,8 @@ gulp.task('dev', ['html', 'image', 'style', 'script'], function (){
 // });
 
 // default
-gulp.task('default', function() {
-    gulp.start('dev')
+gulp.task('default', function(cb) {
+    runSequence('dev', cb)
 });
 
 // watch
