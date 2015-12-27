@@ -46,6 +46,11 @@ gulp.task('css', function() {
         .pipe(gulp.dest(dist + '/css'));
 });
 
+// style
+gulp.task('style', function (){
+    gulp.start('sass', 'css');
+});
+
 // js
 gulp.task('js', function() {
     gulp.src('app/js/**.js')
@@ -61,6 +66,11 @@ gulp.task('es', function() {
         .pipe(gulp.dest(dist + '/js'));
 });
 
+//script
+gulp.task('script', function (){
+    gulp.start('es', 'js');
+});
+
 // browserSync
 gulp.task('browserSync', function() {
     browserSync({
@@ -70,7 +80,8 @@ gulp.task('browserSync', function() {
     })
 });
 
-gulp.task('dev', ['html', 'css', 'js'], function (){
+gulp.task('dev', function (){
+    gulp.start('hello', 'html', 'style', 'script');
 });
 
 // gulp.task('build', [`clean`, `sass`, `useref`, `images`, `fonts`], function (){
@@ -78,7 +89,8 @@ gulp.task('dev', ['html', 'css', 'js'], function (){
 // });
 
 // default
-gulp.task('default', ['dev'], function() {
+gulp.task('default', function() {
+    gulp.start('dev');
 });
 
 // watch
