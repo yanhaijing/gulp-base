@@ -4,17 +4,18 @@
  * @date 2015年12月26日 17:26:48
  */
 
-var dist = 'dist';
+var dist = 'dist'
 
-var gulp = require('gulp');
-var browserSync = require('browser-sync');
-var del = require('del');
-var babel = require('gulp-babel');
-var sass = require('gulp-ruby-sass');
-var concat  = require('gulp-concat');
-var notify = require('gulp-notify');
-var cache = require('gulp-cache');
-var runSequence = require('run-sequence');
+var gulp = require('gulp')
+var browserSync = require('browser-sync')
+var del = require('del')
+var babel = require('gulp-babel')
+var sass = require('gulp-ruby-sass')
+var concat  = require('gulp-concat')
+var cache = require('gulp-cache')
+var runSequence = require('run-sequence')
+var minifycss = require('gulp-minify-css')
+var uglify  = require('gulp-uglify')
 
 // hello
 gulp.task('hello', function() {
@@ -44,10 +45,21 @@ gulp.task('sass', function() {
         .on('error', sass.logError)
         .pipe(gulp.dest(dist + '/css'))
 });
+gulp.task('sass:build', function() {
+    return sass('app/css/**.scss')
+        .on('error', sass.logError)
+        .pipe(minifycss())
+        .pipe(gulp.dest(dist + '/css'))
+});
 
 // css
 gulp.task('css', function() {
     return gulp.src('app/css/**.css')
+        .pipe(gulp.dest(dist + '/css'))
+});
+gulp.task('css:build', function() {
+    return gulp.src('app/css/**.css')
+        .pipe(minifycss())
         .pipe(gulp.dest(dist + '/css'))
 });
 
@@ -55,10 +67,18 @@ gulp.task('css', function() {
 gulp.task('style', function (cb){
     runSequence(['sass', 'css'], cb)
 });
+gulp.task('style:build', function (cb){
+    runSequence(['sass:build', 'css:build'], cb)
+});
 
 // js
 gulp.task('js', function() {
     return gulp.src('app/js/**.js')
+        .pipe(gulp.dest(dist + '/js'))
+});
+gulp.task('js:build', function() {
+    return gulp.src('app/js/**.js')
+        .pipe(uglify())
         .pipe(gulp.dest(dist + '/js'))
 });
 
@@ -70,10 +90,21 @@ gulp.task('es', function() {
         }))
         .pipe(gulp.dest(dist + '/js'))
 });
+gulp.task('es:build', function() {
+    return gulp.src('app/js/**.es')
+        .pipe(babel({
+            presets: ['es2015']
+        }))
+        .pipe(uglify())
+        .pipe(gulp.dest(dist + '/js'))
+});
 
 //script
 gulp.task('script', function (cb){
     runSequence(['es', 'js'], cb)
+});
+gulp.task('script:build', function (cb){
+    runSequence(['es:build', 'js:build'], cb)
 });
 
 // browserSync
@@ -85,13 +116,15 @@ gulp.task('browserSync', function() {
     })
 });
 
+// dev
 gulp.task('dev', ['clean'], function (cb){
     runSequence(['html', 'image', 'style', 'script'], cb)
 });
 
-// gulp.task('build', [`clean`, `sass`, `useref`, `images`, `fonts`], function (){
-//     console.log('Building files');
-// });
+// build
+gulp.task('build', ['clean'], function (cb){
+    runSequence(['html', 'image', 'style:build', 'script:build'], cb)
+});
 
 // default
 gulp.task('default', function(cb) {
