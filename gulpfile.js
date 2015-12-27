@@ -10,6 +10,7 @@ var gulp = require('gulp');
 // var sass = require('gulp-sass');
 var browserSync = require('browser-sync');
 var del = require('del');
+var babel = require('gulp-babel');
 
 // hello
 gulp.task('hello', function() {
@@ -41,6 +42,15 @@ gulp.task('css', function() {
 // js
 gulp.task('js', function() {
     gulp.src('app/js/**.js')
+        .pipe(gulp.dest(dist + '/js'));
+});
+
+// es
+gulp.task('es', function() {
+    gulp.src('app/js/**.es')
+        .pipe(babel({
+            presets: ['es2015']
+        }))
         .pipe(gulp.dest(dist + '/js'));
 });
 
