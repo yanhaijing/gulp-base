@@ -11,6 +11,8 @@ var browserSync = require('browser-sync');
 var del = require('del');
 var babel = require('gulp-babel');
 var sass = require('gulp-ruby-sass');
+var concat  = require('gulp-concat');
+var notify = require('gulp-notify');
 
 // hello
 gulp.task('hello', function() {
@@ -24,51 +26,52 @@ gulp.task('clean', function() {
 
 // html
 gulp.task('html', function() {
-    // img
-    gulp.src('app/img/**')
-        .pipe(gulp.dest(dist + '/img/'));
-
-    // html
     gulp.src('app/**.html')
-        .pipe(gulp.dest(dist));
+        .pipe(gulp.dest(dist))
+});
+
+// image
+gulp.task('image', function() {
+    gulp.src('app/**/*.+(png|jpg|jpeg|gif|svg)')
+        .pipe(gulp.dest(dist))
 });
 
 // scss
 gulp.task('sass', function() {
     sass('app/css/**.scss')
         .on('error', sass.logError)
-        .pipe(gulp.dest(dist + '/css'));
+        .pipe(gulp.dest(dist + '/css'))
 });
 
 // css
 gulp.task('css', function() {
-    gulp.src('app/css/**')
-        .pipe(gulp.dest(dist + '/css'));
+    gulp.src('app/css/**.css')
+        .pipe(gulp.dest(dist + '/css'))
 });
 
 // style
 gulp.task('style', function (){
-    gulp.start('sass', 'css');
+    gulp.start('sass', 'css')
 });
 
 // js
 gulp.task('js', function() {
     gulp.src('app/js/**.js')
-        .pipe(gulp.dest(dist + '/js'));
+        .pipe(gulp.dest(dist + '/js'))
 });
 
 // es
 gulp.task('es', function() {
-    gulp.src('app/js/**.es')
+    return gulp.src('app/js/**.es')
         .pipe(babel({
             presets: ['es2015']
         }))
-        .pipe(gulp.dest(dist + '/js'));
+        .pipe(gulp.dest(dist + '/js'))
 });
 
 //script
 gulp.task('script', function (){
-    gulp.start('es', 'js');
+    gulp.start('es', 'js')
 });
 
 // browserSync
@@ -80,8 +83,7 @@ gulp.task('browserSync', function() {
     })
 });
 
-gulp.task('dev', function (){
-    gulp.start('hello', 'html', 'style', 'script');
+gulp.task('dev', ['html', 'image', 'style', 'script'], function (){
 });
 
 // gulp.task('build', [`clean`, `sass`, `useref`, `images`, `fonts`], function (){
@@ -89,13 +91,13 @@ gulp.task('dev', function (){
 // });
 
 // default
-gulp.task('default', function() {
-    gulp.start('dev');
+gulp.task('default', [], function() {
+    gulp.start('dev')
 });
 
 // watch
 gulp.task('watch', ['browserSync'], function() {
-    gulp.watch('app/**', ['dev']);
-    gulp.watch(dist + '/**', browserSync.reload);
+    gulp.watch('app/**', ['dev'])
+    gulp.watch(dist + '/**', browserSync.reload)
 });
 
