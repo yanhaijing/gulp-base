@@ -13,6 +13,7 @@ var babel = require('gulp-babel');
 var sass = require('gulp-ruby-sass');
 var concat  = require('gulp-concat');
 var notify = require('gulp-notify');
+var cache = require('gulp-cache');
 
 // hello
 gulp.task('hello', function() {
@@ -91,7 +92,7 @@ gulp.task('dev', ['html', 'image', 'style', 'script'], function (){
 // });
 
 // default
-gulp.task('default', [], function() {
+gulp.task('default', function() {
     gulp.start('dev')
 });
 
