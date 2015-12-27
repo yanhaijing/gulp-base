@@ -23,6 +23,10 @@
 
 	$ gulp build
 
+清理输出目录，使用下面的命令
+
+    $ gulp clean
+    
 ## 协议
 [MIT-LICENSE](MIT-LICENSE)
 
