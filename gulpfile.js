@@ -7,10 +7,10 @@
 var dist = 'dist';
 
 var gulp = require('gulp');
-// var sass = require('gulp-sass');
 var browserSync = require('browser-sync');
 var del = require('del');
 var babel = require('gulp-babel');
+var sass = require('gulp-ruby-sass');
 
 // hello
 gulp.task('hello', function() {
@@ -31,6 +31,13 @@ gulp.task('html', function() {
     // html
     gulp.src('app/**.html')
         .pipe(gulp.dest(dist));
+});
+
+// scss
+gulp.task('sass', function() {
+    sass('app/css/**.scss')
+        .on('error', sass.logError)
+        .pipe(gulp.dest(dist + '/css'));
 });
 
 // css
